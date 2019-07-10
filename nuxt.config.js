@@ -23,11 +23,14 @@ module.exports = {
   ** Global CSS
   */
   css: [
+    'element-ui/lib/theme-chalk/index.css'
   ],
   /*
   ** Plugins to load before mounting the App
   */
   plugins: [
+    // ssr: true表示这个插件只在服务端起作用
+    {src: '~/plugins/element-ui', ssr: true }
   ],
   /*
   ** Nuxt.js modules
@@ -51,6 +54,8 @@ module.exports = {
     ** You can extend webpack config here
     */
     extend(config, ctx) {
-    }
+    },
+    // 防止element-ui被多次打包
+    vendor: ['element-ui']
   }
 }
