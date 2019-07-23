@@ -18,14 +18,18 @@
         :model="ruleForm"
         label-width="100px"
         :rules="rules"
+        :label-position="labelPosition"
       >
         <el-form-item label="手机号" prop="phone">
           <el-input v-model="ruleForm.phone" class="form-text" />
         </el-form-item>
         <el-form-item class="code-item">
-          <el-button type="info" size="small">
-            免费获取短信验证码
-          </el-button>
+          <count-down  @click.native="getVerifyCode" 
+            :start="flagCountDown"
+            :msg="countDownMsg" 
+            :flagDisabled="flagCountDownDisabled"
+            >  
+          </count-down>
         </el-form-item>
         <el-form-item label="短信验证码" prop="verifyCode">
           <el-input v-model="ruleForm.verifyCode" class="form-text" />
@@ -40,7 +44,7 @@
         <el-form-item label="确认密码" prop="password2">
           <el-input
             v-model="ruleForm.password2"
-            type="checkPass"
+            type="password"
             class="form-text"
           />
         </el-form-item>
@@ -56,17 +60,23 @@
     </section>
     <footer class="footer-mini">
       <p class="copyright">
-        <a class="f1" href="www.strayjoke.com">strayjoke.com</a>
-        <a class="f1" href="www.strayjoke.com">风了</a>
-        <span class="f1">备案号</span>
+        <a class="f1" href="www.strayjoke.com">&copy 风了网 www.strayjoke.com</a>
+        <span class="f1">沪ICP备19024166号</span>
       </p>
     </footer>
   </div>
 </template>
 
 <script>
+import {signup, getSignupCode} from '@/api/auth'
+import countDown from '~/components/CountDown.vue'
+import MD5 from 'js-md5'
+
 export default {
   layout: "blank",
+  components:{
+    countDown
+  },
   data() {
     var checkMobile = (rule, value, callback) => {
       if (!value) {
@@ -80,7 +90,7 @@ export default {
     var checkCode = (rule, value, callback) => {
       if (!value) {
         callback(new Error("请输入短信验证码"))
-      } else if (/^[\d]{6}$/.test(value)) {
+      } else if (/^[\d]{4}$/.test(value)) {
         callback()
       } else {
         callback(new Error("短信验证码格式不正确"))
@@ -117,18 +127,74 @@ export default {
         password: [{ validator: checkPassword, trigger: "blur" }],
         password2: [{ validator: checkPassword2, trigger: "blur" }],
         verifyCode: [{ validator: checkCode, trigger: "blur" }]
-      }
+      },
+      labelPosition:'right',
+      flagCountDown:false,
+      flagCountDownDisabled:false,
+      countDownMsg:''
+    }
+  },
+  mounted:function(){
+    let that = this
+    window.onresize = function(){
+      that.adaptWindow()
     }
   },
   methods: {
+    getVerifyCode(){
+      this.flagCountDown = false
+      this.$refs['ruleForm'].validateField('phone', (error) => {
+        if (!error){
+          this.countDownMsg = '正在发送验证码...'
+          this.flagCountDownDisabled = true
+          getSignupCode({phone:this.ruleForm.phone}).then(res=>{
+            if(res.status === 201){
+                this.flagCountDown = true
+                this.countDownMsg = '已发送，1分钟后可重新获取'
+            } 
+          }).catch(err=>{
+            this.flagCountDownDisabled = false
+            if (err.status_code === 422){
+              this.countDownMsg = err.errors.phone[0]
+            }
+          })
+        } else {
+          return false
+        }
+      })
+    },
     signup() {
-      console.log("submit!")
+      this.$refs['ruleForm'].validate((valid) => {
+        if (valid) {
+          const para = {phone:this.ruleForm.phone, verifyCode:this.ruleForm.verifyCode, password:MD5(this.ruleForm.password)}
+          signup(para).then(res=>{
+            if(res.status === 200){
+              this.$router.push('/')
+            } 
+          }).catch(err=>{
+            if (err.status_code === 401){
+              this.$router.push('/auth/login')
+            }
+          })
+        } else {
+          return false
+        }
+      })
+    },
+    adaptWindow(){
+      let windowWidth = document.documentElement.clientWidth
+      //屏幕尺寸小于600
+      if (windowWidth <= 600){ 
+        this.labelPosition = 'top'
+      } else {
+        this.labelPosition = 'right'
+      }
     }
   }
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import "@/assets/scss/common.scss";
 .page-signup {
   .header-mini {
@@ -191,7 +257,7 @@ export default {
     }
   }
 
-  @media (max-width: 600px) {
+  @media screen and  (max-width: 600px) {
     .header-mini {
       min-width: 100%;
       .header-wrapper {
@@ -200,11 +266,15 @@ export default {
           display: none;
         }
       }
-      .content {
-        width: 100%;
-      }
-      .form-text {
-        padding-left: 50px;
+    }
+
+    .content {
+      width: 100%;
+      .el-form-item{
+        label{
+          padding-bottom:0;
+        }
+        padding:0 50px;
       }
     }
   }

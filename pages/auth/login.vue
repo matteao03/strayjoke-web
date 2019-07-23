@@ -10,11 +10,16 @@
                     src="//s0.meituan.net/bs/file/?f=fe-sso-fs:build/page/static/banner/www.jpg"
                     width="480"
                     height="370"
-                    alt="美团网"
+                    alt="风了网"
                     />
                 </div>
                 <div class="login-section">
-                    <el-form ref="normalForm" :model="normalForm" v-if="isNormal">
+                    <el-form ref="normalForm" 
+                        :model="normalForm" 
+                        v-if="isNormal" 
+                        :rules="rules"
+                        :label-position="labelPosition"
+                    >
                         <div class="login-type">
                             <p class="phone-link" @click="isNormal = false">
                                 手机动态码登录
@@ -49,7 +54,7 @@
                             />
                         </el-form-item>
                         <el-form-item class="login-button">
-                            <el-button type="primary">
+                            <el-button type="primary" @click="loginByPassword">
                             登录
                             </el-button>
                         </el-form-item>
@@ -58,7 +63,7 @@
                             <a href="/auth/signup">免费注册</a>
                         </p>
                     </el-form>
-                    <el-form v-else ref="phoneForm" :model="phoneForm">
+                    <el-form v-else ref="phoneForm" :model="phoneForm" :rules="rules">
                         <div class="login-type">
                             <p class="normal-link" @click="isNormal = true">
                                 普通方式登录
@@ -81,7 +86,7 @@
                             </span>
                         </el-form-item>
                         <el-form-item class="forget-password-item">
-                            <a href="#" class="forget-password-link">忘记密码？</a>
+                            <a href="#" class="forget-password-link">找回密码？</a>
                         </el-form-item>
                         <el-form-item prop="verifyCode" class="verify-code-item">
                             <el-input
@@ -90,10 +95,13 @@
                             prefix-icon="el-icon-lock"
                             placeholder="验证码"
                             />
-                            <p class="verify-code-tip">获取短信验证码</p>
+                            <p class="verify-code-tip " v-if="flagCountDown" style="color:#888;">重新获取({{countDown}})</p>
+                            <p class="verify-code-tip " v-else-if="countDownDisabled" style="color:#ddd;">正在发送...</p>
+                            <p class="verify-code-tip" @click="getVerifyCode" v-else>获取短信验证码</p>
                         </el-form-item>
+                        <p style="color:#ff2121;font-size:12px;padding-bottom:10px;" v-if="codeMsg">{{codeMsg}}</p>
                         <el-form-item class="login-button">
-                            <el-button type="primary">
+                            <el-button type="primary" @click="loginByCode">
                             登录
                             </el-button>
                         </el-form-item>
@@ -132,35 +140,138 @@
                 </ul>
             </div>
             <div class="copyright">
-                <a class="f1" href="www.strayjoke.com">strayjoke.com</a>
-                <a class="f1" href="www.strayjoke.com">风了</a>
-                <span class="f1">备案号</span>
+                <a class="f1" href="www.strayjoke.com">&copy 风了网 www.strayjoke.com</a>
+                <span class="f1">沪ICP备19024166号</span>
             </div>
         </footer>
     </div>
 </template>
 <script>
+import MD5 from 'js-md5'
+import {loginByPassword, loginByCode, getLoginCode} from '@/api/auth'
+
 export default {
   layout: "blank",
   data() {
+    var checkMobile = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error("请输入手机号码"))
+      } else if (/^[1][0-9]{10}$/.test(value)) {
+        callback()
+      } else {
+        callback(new Error("手机号码格式不正确"))
+      }
+    }
+    var checkCode = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error("请输入短信验证码"))
+      } else if (/^[\d]{4}$/.test(value)) {
+        callback()
+      } else {
+        callback(new Error("短信验证码格式不正确"))
+      }
+    }
+    var checkPassword = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请输入密码"))
+      } else {
+        callback()
+      }
+    }
+    
     return {
         isNormal:true,
         normalForm: {
-            phone: "",
+            phone: "17717935765",
             countryCode: "86",
-            password: ""
+            password: "123456"
         },
         phoneForm: {
             phone: "",
             countryCode: "86",
             verifyCode: ""
         },
+        rules: {
+            phone: [{ validator: checkMobile, trigger: "blur" }],
+            password: [{ validator: checkPassword, trigger: "blur" }],
+            verifyCode: [{ validator: checkCode, trigger: "blur" }]
+        },
+        labelPosition:'right',
+        countDownDisabled:false,
+        flagCountDown:false,
+        countDown:60,
+        codeMsg:''
     }
   },
   methods: {
-    login() {
-      console.log("submit!")
-    }
+    getVerifyCode(){
+        this.countDownDisabled = true
+        this.codeMsg = ''
+        this.$refs['phoneForm'].validateField('phone', (error) => {
+            if (!error){
+                this.countDownDisabled = true
+                getLoginCode({phone:this.phoneForm.phone}).then(res=>{
+                if(res.status === 201){
+                    this.flagCountDown = true
+                    this.countDownMethod()
+                    this.codeMsg = '已发送，1分钟后可重新获取'
+                } 
+                }).catch(err=>{
+                    this.countDownDisabled = false
+                    if (err.status_code === 422){
+                        this.codeMsg = err.errors.phone[0]
+                    }
+                })
+            } else {
+                return false
+            }
+        })
+    },
+    countDownMethod(){ //倒计时
+        if (this.countDown > 0) {
+            setTimeout(() => {
+                this.countDown -= 1;
+                this.countDownMethod()
+            }, 1000)
+        } else {
+            this.countDownDisabled = false
+            this.flagCountDown = false
+            this.codeMsg = ''
+        }
+    },
+    loginByPassword() {
+        this.$refs['normalForm'].validate((valid) => {
+            if (valid) {
+                const para = {phone:this.normalForm.phone, countryCode:this.normalForm.countryCode, password:MD5(this.normalForm.password)}
+                loginByPassword(para).then(res=>{
+                    if(res.status === 200){
+                        this.$store.commit('auth/set_token', res.data.access_token)
+                        this.$router.push('/')
+                    } 
+                }).catch(err=>{
+                })
+            } else {
+                return false
+            }
+        })
+    },
+    loginByCode() {
+        this.$refs['phoneForm'].validate((valid) => {
+            if (valid) {
+                const para = {phone:this.phoneForm.phone, countryCode:this.phoneForm.countryCode, verifyCode:this.phoneForm.verifyCode}
+                loginByCode(para).then(res=>{
+                    if(res.status === 200){
+                        console.log(res)
+                        this.$store.commit('auth/set_token', res.access_token)
+                        this.$router.push('/')
+                    } 
+                }).catch(err=>{
+                })
+            } else {
+                return false
+            }
+        })
+    },
   }
 }
 </script>
