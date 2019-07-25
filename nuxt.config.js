@@ -61,5 +61,9 @@ module.exports = {
 
   router:{
     middleware: ['auth']
-  }
+  },
+
+  server: {
+    port: 8081, // default: 3000
+  },
 }
