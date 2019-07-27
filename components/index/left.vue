@@ -1,5 +1,5 @@
 <template>
-    <div class="left">
+    <div class="sj-left">
         <div class="title">
             <span class="title-text">全部分类</span>
         </div>
@@ -75,7 +75,7 @@ export default {
 </script>
 
 <style lang="scss">
-.left{
+.sj-left{
     width: 230px;
     height: 475px;
     position: relative;

@@ -1,7 +1,7 @@
 <template>
     <ul class="header-nav">
         <li class="item">
-            <nuxt-link to="/">个人中心</nuxt-link>
+            <nuxt-link to="/info">个人中心</nuxt-link>
             <ul class="second-nav">
                 <li><nuxt-link to="/">我的订单</nuxt-link></li>
                 <li><nuxt-link to="/">我的收藏</nuxt-link></li>

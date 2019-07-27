@@ -1,7 +1,7 @@
 <template>
-    <div class="right">
+    <div class="sj-right">
         <div class="menu-nav">
-            <a href="/">法律顾问</a>
+            <a href="/service">法律顾问</a>
             <a href="/">公司法务</a>
             <a href="/">维权</a>
             <a href="/">论坛</a>
@@ -34,7 +34,7 @@ export default {
 </script>
 
 <style lang="scss">
-.right{
+.sj-right{
     float: left;
     .menu-nav{
         position: absolute;
