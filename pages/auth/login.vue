@@ -90,10 +90,10 @@
                         </el-form-item>
                         <el-form-item prop="verifyCode" class="verify-code-item">
                             <el-input
-                            v-model="phoneForm.verifyCode"
-                            class="form-text"
-                            prefix-icon="el-icon-lock"
-                            placeholder="验证码"
+                                v-model="phoneForm.verifyCode"
+                                class="form-text"
+                                prefix-icon="el-icon-lock"
+                                placeholder="验证码"
                             />
                             <p class="verify-code-tip " v-if="flagCountDown" style="color:#888;">重新获取({{countDown}})</p>
                             <p class="verify-code-tip " v-else-if="countDownDisabled" style="color:#ddd;">正在发送...</p>
@@ -153,7 +153,7 @@ import {loginByPassword, loginByCode, getLoginCode} from '@/api/auth'
 export default {
   layout: "blank",
   data() {
-    var checkMobile = (rule, value, callback) => {
+    var checkPhone = (rule, value, callback) => {
       if (!value) {
         callback(new Error("请输入手机号码"))
       } else if (/^[1][0-9]{10}$/.test(value)) {
@@ -192,7 +192,7 @@ export default {
             verifyCode: ""
         },
         rules: {
-            phone: [{ validator: checkMobile, trigger: "blur" }],
+            phone: [{ validator: checkPhone, trigger: "blur" }],
             password: [{ validator: checkPassword, trigger: "blur" }],
             verifyCode: [{ validator: checkCode, trigger: "blur" }]
         },

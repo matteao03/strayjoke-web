@@ -9,7 +9,7 @@
                     <my-filter />
                 </div>
                 <div class="list-container">
-                    <my-list />
+                    <my-list :list-data="list"/>
                 </div>
             </div>
             <div class="right">1122</div>
@@ -21,13 +21,25 @@
 import Breadcrumb from '@/components/service/breadcrumb.vue'
 import MyFilter from '@/components/service/filter.vue'
 import MyList from '@/components/service/list.vue'
+import { getProductList } from '@/api/product'
 
 export default {
     components:{
         Breadcrumb,
         MyFilter,
         MyList
-    }
+    },
+    data(){
+        return {
+            list:[]
+        }
+    },
+    async asyncData () {
+       let {data} =  await getProductList()
+       return {
+           list:data.data
+       }
+    },
 }
 </script>
 

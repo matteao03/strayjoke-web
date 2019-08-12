@@ -1,8 +1,8 @@
 <template>
     <div class="sj-right">
         <div class="menu-nav">
-            <a href="/service">法律顾问</a>
-            <a href="/">公司法务</a>
+            <a href="/service?type=person">法律顾问</a>
+            <a href="/service?type=org">公司法务</a>
             <a href="/">维权</a>
             <a href="/">论坛</a>
             <a href="/">招聘/求职</a>

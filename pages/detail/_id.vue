@@ -23,30 +23,17 @@
             <h4>服务及优惠</h4>
             <div class="group">
                 <ul>
-                    <li class="item clearfix">
+                    <li v-for="item in skus" :key="item.id" class="item clearfix">
                         <div class="img-container">
                             <img src="http://p1.meituan.net/208.126/deal/81d988a26ec9fdf21e41e6812a10dcb5108017.jpg@100w_100h_1e_1c" />
                         </div>
                         <div class="info">
                             <div class="buy-it">
-                                <el-button type="warning" round>立即购买</el-button>
+                                <el-button type="warning" round @click="buyIt(item.id)">立即购买</el-button>
                             </div>
+                            <div class="title">服务周期：{{item.period}}</div>
                             <div class="title">一个月法律顾问</div>
-                            <div class="title">一个月法律顾问</div>
-                            <div class="title">一个月法律顾问</div>
-                        </div>
-                    </li>
-                    <li class="item clearfix">
-                        <div class="img-container">
-                            <img src="http://p1.meituan.net/208.126/deal/81d988a26ec9fdf21e41e6812a10dcb5108017.jpg@100w_100h_1e_1c" />
-                        </div>
-                        <div class="info">
-                            <a class="buy-it" href="/cert">
-                                <el-button type="warning" round >立即购买</el-button>
-                            </a>
-                            <div class="title">一个月法律顾问</div>
-                            <div class="title">一个月法律顾问</div>
-                            <div class="title">一个月法律顾问</div>
+                            <div class="title">￥{{item.price}}</div>
                         </div>
                     </li>
                 </ul>
@@ -74,13 +61,25 @@
 </template>
 
 <script>
+import { getSkuList } from '@/api/product'
+
 export default {
     data(){
         return {
-            colors: ['#99A9BF', '#F7BA2A', '#FF9900']
+            colors: ['#99A9BF', '#F7BA2A', '#FF9900'],
+            skus:[]
         }
     },
+    async asyncData ({params}) {
+       let {data} =  await getSkuList({product:params.id})
+       return {
+        skus:data.data
+       }
+    },
     methods:{
+        buyIt(id){
+            this.$router.push(`/cert/${id}`)
+        }
     }
 }
 </script>

@@ -7,90 +7,27 @@
             <span><a href="/service">好评最多</a></span>
         </div>
         <ul class="list">
-            <li class="item clearfix">
+            <li v-for="item in listData" :key="item.id" class="item clearfix">
                 <div class="img">
-                    <a href="/detail">
+                    <a :href="'/detail/'+item.id">
                         <img src="http://p1.meituan.net/600.600/deal/cd85d78a3d6def81c6e7957283bdb27a291498.jpg@220w_125h_1e_1c" />
                     </a>
                 </div>
                 <div class="info">
-                    <a href="/detail">
-                        <h4>赵飞亚</h4>
+                    <a :href="'/detail/'+item.id">
+                        <h4>{{item.lawyer.data.name}}</h4>
                         <div class="source">
                              <el-rate
                                 :colors="colors">
                             </el-rate>
-                            <span>3633条评论</span>
+                            <span>{{item.review || 100}}条评论</span>
                         </div>
                         <div class="address">
-                            南翔镇
+                            {{item.lawyer.data.address}}
                         </div>
                     </a>
                 </div>
-            </li>
-            <li class="item clearfix">
-                <div class="img">
-                    <a href="/detail">
-                        <img src="http://p1.meituan.net/600.600/deal/cd85d78a3d6def81c6e7957283bdb27a291498.jpg@220w_125h_1e_1c" />
-                    </a>
-                </div>
-                <div class="info">
-                    <a href="/detail">
-                        <h4>赵飞亚</h4>
-                        <div class="source">
-                             <el-rate
-                                :colors="colors">
-                            </el-rate>
-                            <span>3633条评论</span>
-                        </div>
-                        <div class="address">
-                            南翔镇
-                        </div>
-                    </a>
-                </div>
-            </li>
-            <li class="item clearfix">
-                <div class="img">
-                    <a href="/detail">
-                        <img src="http://p1.meituan.net/600.600/deal/cd85d78a3d6def81c6e7957283bdb27a291498.jpg@220w_125h_1e_1c" />
-                    </a>
-                </div>
-                <div class="info">
-                    <a href="/detail">
-                        <h4>赵飞亚</h4>
-                        <div class="source">
-                             <el-rate
-                                :colors="colors">
-                            </el-rate>
-                            <span>3633条评论</span>
-                        </div>
-                        <div class="address">
-                            南翔镇
-                        </div>
-                    </a>
-                </div>
-            </li>
-            <li class="item clearfix">
-                <div class="img">
-                    <a href="/detail">
-                        <img src="http://p1.meituan.net/600.600/deal/cd85d78a3d6def81c6e7957283bdb27a291498.jpg@220w_125h_1e_1c" />
-                    </a>
-                </div>
-                <div class="info">
-                    <a href="/detail">
-                        <h4>赵飞亚</h4>
-                        <div class="source">
-                             <el-rate
-                                :colors="colors">
-                            </el-rate>
-                            <span>3633条评论</span>
-                        </div>
-                        <div class="address">
-                            南翔镇
-                        </div>
-                    </a>
-                </div>
-            </li>
+            </li> 
         </ul>
     </div>
 </template>
@@ -99,7 +36,13 @@
 export default {
     data(){
         return {
-            colors: ['#99A9BF', '#F7BA2A', '#FF9900']
+            colors: ['#99A9BF', '#F7BA2A', '#FF9900'],
+        }
+    },
+    props:{
+        listData:{
+            type:Array,
+            default:[]
         }
     }
 }
