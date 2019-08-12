@@ -73,12 +73,15 @@
 
 <script>
 import { getSku } from '@/api/product'
+import { createOrder } from '@/api/order'
 import moment from 'moment'
 
 export default {
     data(){
         return {
             sku:[],
+            skuId:0,
+            couponId:0,
             price:0,
             perion:0,
             start_at:'',
@@ -98,7 +101,8 @@ export default {
         return {
             sku:[{title, period, price, id}],
             price:price,
-            period:period
+            period:period,
+            skuId:id
         }
     },
     methods:{
@@ -107,7 +111,10 @@ export default {
             this.end_at = moment(this.start_at).add(this.period, 'days')
         },
         createOrder(){
-
+            const para = Object.assign({}, {skuId:this.skuId, couponId:this.couponId, start_at:this.start_at, remark:this.remark})
+            createOrder(para).then(res=>{
+                this.$router.push(`/pay/${res.data.id}`)
+            })
         }
     }
 }
