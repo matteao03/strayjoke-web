@@ -2,7 +2,7 @@ import request from '@/utils/request.js'
 
 export function getSignupCode(data) {
   return request({
-    url: '/api/signupCode',
+    url: '/signupCode',
     method: 'post',
     data
   })
@@ -10,7 +10,7 @@ export function getSignupCode(data) {
 
 export function getLoginCode(data) {
   return request({
-    url: '/api/loginCode',
+    url: '/loginCode',
     method: 'post',
     data
   })
@@ -18,7 +18,7 @@ export function getLoginCode(data) {
 
 export function signup(data) {
   return request({
-    url: '/api/signup',
+    url: '/signup',
     method: 'post',
     data
   })
@@ -26,7 +26,7 @@ export function signup(data) {
 
 export function loginByPassword(data) {
   return request({
-    url: '/api/loginByPassword',
+    url: '/loginByPassword',
     method: 'post',
     data
   })
@@ -34,9 +34,16 @@ export function loginByPassword(data) {
 
 export function loginByCode(data) {
   return request({
-    url: '/api/loginByCode',
+    url: '/loginByCode',
     method: 'post',
     data
+  })
+}
+
+export function getInfo() {
+  return request({
+    url: '/info',
+    method: 'get',
   })
 }
 

@@ -61,10 +61,6 @@ export default {
 </script>
 
 <style lang="scss">
-.header-index .search-bar{
-    padding-bottom: 0px;
-}
-
 .page-info{
     margin: 15px auto 0;
     width: 1190px;

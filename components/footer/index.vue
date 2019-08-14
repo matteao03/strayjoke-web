@@ -54,6 +54,7 @@ export default {
     padding:40px 45px;
     border-top:1px solid #e5e5e5;
     border-bottom:1px solid #e5e5e5;
+
     .item{
         width:25%;
         float:left;

@@ -25,7 +25,10 @@ export default {
 </script>
 
 <style lang="scss">
+@import "~/assets/scss/common.scss";
+
 .layout-default{
+  background: #f8f8f8;
   .header-container, 
   .footer-container, 
   .main-container{
@@ -34,6 +37,7 @@ export default {
   }
   .footer-container{
     margin-top: 40px;
+    
   }
 }
 </style>

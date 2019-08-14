@@ -3,10 +3,10 @@
         <li class="item">
             <nuxt-link to="/info">个人中心</nuxt-link>
             <ul class="second-nav">
-                <li><nuxt-link to="/">我的订单</nuxt-link></li>
-                <li><nuxt-link to="/">我的收藏</nuxt-link></li>
-                <li><nuxt-link to="/">抵用券</nuxt-link></li>
-                <li><nuxt-link to="/">账户设置</nuxt-link></li>
+                <li><nuxt-link to="/order">我的订单</nuxt-link></li>
+                <li><nuxt-link to="/collect">我的收藏</nuxt-link></li>
+                <li><nuxt-link to="/coupon">抵用券</nuxt-link></li>
+                <li><nuxt-link to="/info">账户设置</nuxt-link></li>
             </ul>
         </li>
         <li class="item">

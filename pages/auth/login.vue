@@ -1,10 +1,10 @@
 <template>
-    <div class="page-login">
+    <div class="auth-login">
         <header class="header">
             <a href="/" class="site-logo">风了</a>
         </header>
         <section class="content-wrapper">
-            <div class="site-body cf">
+            <div class="site-body clearfix">
                 <div class="banner-section">
                     <img
                     src="//s0.meituan.net/bs/file/?f=fe-sso-fs:build/page/static/banner/www.jpg"
@@ -20,20 +20,20 @@
                         :rules="rules"
                         :label-position="labelPosition"
                     >
-                        <div class="login-type">
-                            <p class="phone-link" @click="isNormal = false">
+                        <div class="login-type clearfix">
+                            <p style="float:left;">账号登录</p>
+                            <p class="phone-link" @click="changeForm('phone')">
                                 手机动态码登录
                                 <i class="el-icon-mobile-phone" />
                             </p>
-                            账号登录
                         </div>
                         <el-form-item prop="phone" class="phone-item">
                             <el-input
-                            v-model="normalForm.countryCode"
-                            type="hidden"
-                            name="countryCode"
-                            style="display:none;"
-                            />
+                                v-model="normalForm.countryCode"
+                                type="hidden"
+                                name="countryCode"
+                                style="display:none;"
+                            /> 
                             <el-input v-model="normalForm.phone" class="form-text phone-field" placeholder="手机号" />
                             <span class="country-area">
                             <i class="el-icon-plus" />
@@ -54,7 +54,7 @@
                             />
                         </el-form-item>
                         <el-form-item class="login-button">
-                            <el-button type="primary" @click="loginByPassword">
+                            <el-button type="primary" @click="loginByPassword" :loading="isNormalLoading">
                             登录
                             </el-button>
                         </el-form-item>
@@ -65,7 +65,7 @@
                     </el-form>
                     <el-form v-else ref="phoneForm" :model="phoneForm" :rules="rules">
                         <div class="login-type">
-                            <p class="normal-link" @click="isNormal = true">
+                            <p class="normal-link" @click="changeForm('normal')">
                                 普通方式登录
                                 <i class="el-icon-user-solid" />
                             </p>
@@ -101,7 +101,7 @@
                         </el-form-item>
                         <p style="color:#ff2121;font-size:12px;padding-bottom:10px;" v-if="codeMsg">{{codeMsg}}</p>
                         <el-form-item class="login-button">
-                            <el-button type="primary" @click="loginByCode">
+                            <el-button type="primary" @click="loginByCode" :loading="isPhoneLoading">
                             登录
                             </el-button>
                         </el-form-item>
@@ -122,7 +122,7 @@
             </div>
         </section>
         <footer class="footer">
-            <div class="site-info-nav cf">
+            <div class="site-info-nav clearfix">
                 <ul>
                     <li class="first">
                     <a href="#">关于风了</a>
@@ -180,6 +180,8 @@ export default {
     }
     
     return {
+        isNormalLoading:false,
+        isPhoneLoading:false,
         isNormal:true,
         normalForm: {
             phone: "17717935765",
@@ -204,6 +206,16 @@ export default {
     }
   },
   methods: {
+    changeForm(type){
+        if (type === 'phone')
+        {
+            this.$refs['normalForm'].clearValidate()
+            this.isNormal = false
+        } else if (type === 'normal'){
+            this.$refs['phoneForm'].clearValidate()
+            this.isNormal = true
+        }
+    },
     getVerifyCode(){
         this.countDownDisabled = true
         this.codeMsg = ''
@@ -242,13 +254,16 @@ export default {
     loginByPassword() {
         this.$refs['normalForm'].validate((valid) => {
             if (valid) {
+                this.isNormalLoading = true
                 const para = {phone:this.normalForm.phone, countryCode:this.normalForm.countryCode, password:MD5(this.normalForm.password)}
                 loginByPassword(para).then(res=>{
                     if(res.status === 200){
-                        this.$store.commit('auth/set_token', res.data.access_token)
+                        this.isNormalLoading = false
+                        this.$store.commit('set_token', res.data.access_token)
                         this.$router.push('/')
                     } 
                 }).catch(err=>{
+                    this.isNormalLoading = false
                 })
             } else {
                 return false
@@ -258,14 +273,16 @@ export default {
     loginByCode() {
         this.$refs['phoneForm'].validate((valid) => {
             if (valid) {
+                this.isPhoneLoading = true
                 const para = {phone:this.phoneForm.phone, countryCode:this.phoneForm.countryCode, verifyCode:this.phoneForm.verifyCode}
                 loginByCode(para).then(res=>{
                     if(res.status === 200){
-                        console.log(res)
-                        this.$store.commit('auth/set_token', res.access_token)
+                        this.isPhoneLoading = false
+                        this.$store.commit('set_token', res.access_token)
                         this.$router.push('/')
                     } 
                 }).catch(err=>{
+                    this.isPhoneLoading = true
                 })
             } else {
                 return false
@@ -276,22 +293,17 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-@import "~/assets/scss/common.scss";
-.page-login {
-    ul {
-        margin: 0;
-        padding: 0;
-    }
+<style lang="scss">
+.auth-login {
     .header {
         width: 980px;
         height: auto;
         margin: 40px auto 30px;
 
         .site-logo {
-        font-weight: bold;
-        color: #66b1ff;
-        font-size: 28px;
+            font-weight: bold;
+            color: #66b1ff;
+            font-size: 28px;
         }
     }
     .content-wrapper {
@@ -414,52 +426,40 @@ export default {
             width: 594px;
             color: #eee;
             .first {
-            padding-left: 0;
+                padding-left: 0;
             }
 
             li {
-            float: left;
-            margin: 5px 0;
-            padding: 0 16px;
-            line-height: 14px;
-            border-right: 1px solid #eee;
-            a {
-                color: #999;
-            }
+                float: left;
+                margin: 5px 0;
+                padding: 0 16px;
+                line-height: 14px;
+                border-right: 1px solid #eee;
+                a {
+                    color: #999;
+                }
             }
         }
         }
     }
-    .cf:after {
-        display: block;
-        clear: both;
-        height: 0;
-        overflow: hidden;
-        visibility: hidden;
-        content: "";
-    }
-}
-</style>
 
-<style lang="scss">
-.page-login{
-  .phone-field {
-    .el-input__inner{
-      padding-left:60px;
+    .phone-field {
+        .el-input__inner{
+        padding-left:60px;
+        }
     }
-  }
-  .el-button{
-    width:100%;
-  }
-  .forget-password-item{
-    margin-bottom: 10px;
-    .el-form-item__content{
-      line-height: 15px;
+    .el-button{
+        width:100%;
     }
-  }
-  .login-button{
-    margin-bottom: 10px;
-  }
+    .forget-password-item{
+        margin-bottom: 10px;
+        .el-form-item__content{
+            line-height: 15px;
+        }
+    }
+    .login-button{
+        margin-bottom: 10px;
+    }
 }
 </style>
 
