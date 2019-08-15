@@ -1,12 +1,12 @@
 <template>
     <div class="sj-right">
         <div class="menu-nav">
-            <a href="/service?type=person">法律顾问</a>
-            <a href="/service?type=org">公司法务</a>
-            <a href="/">维权</a>
-            <a href="/">论坛</a>
-            <a href="/">招聘/求职</a>
-            <a href="/">律师入驻</a>
+            <nuxt-link to="/service">法律顾问</nuxt-link>
+            <nuxt-link to="/service">公司法务</nuxt-link>
+            <nuxt-link to="/">维权</nuxt-link>
+            <nuxt-link to="/">论坛</nuxt-link>
+            <nuxt-link to="/">招聘/求职</nuxt-link>
+            <nuxt-link to="/">律师入驻</nuxt-link>
         </div>
         <div class="carousel-container clearfix">
             <el-carousel class="carousel" height="415px">

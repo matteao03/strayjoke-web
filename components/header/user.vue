@@ -1,13 +1,13 @@
 <template>
     <div class="header-user">
-        <template v-if="user">
-            你好！<span class="user">{{user}}</span>
-            <nuxt-link>[退出]</nuxt-link>
-        </template>
-        <template v-else>
+        <span v-if="!!user">
+            你好！<span class="name">{{user}}</span>
+            <nuxt-link to="/login">[退出]</nuxt-link>
+        </span>
+        <span v-else>
             <nuxt-link to="/auth/login" class="login">立即登录</nuxt-link>
             <nuxt-link to="/auth/signup" class="signup">注册</nuxt-link>
-        </template>
+        </span>
     </div>
 </template>
 
@@ -15,7 +15,11 @@
 export default {
     data(){
         return {
-            user:''
+        }
+    },
+    computed:{
+        user(){
+            return this.$store.state.user 
         }
     }
 }
@@ -27,8 +31,8 @@ export default {
     a{
         color:#999;
     }
-    .user{
-        padding:0 15px;
+    .name{
+        padding:0 5px;
     }
     .login{
         padding:0 10px;

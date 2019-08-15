@@ -1,5 +1,4 @@
 import axios from 'axios'
-import cookies from '@/utils/cookies'
 
 export default function({store, req}) {
     let state = store.state
@@ -9,8 +8,9 @@ export default function({store, req}) {
             timeout: 5000,
             headers: {'Authorization': `Bearer ${state.token}`},
         }).then(res=>{
-            store.commit('set_user', res.data.name);
-            store.commit('set_phone', res.data.phone);
+            const data = res.data.data
+            store.commit('set_user', data.nickName);
+            store.commit('set_phone', data.phone);
         }).catch(err=>{
             console.log(err)
         })
