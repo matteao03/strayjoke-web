@@ -10,8 +10,8 @@ const service = axios.create({
 // request interceptor
 service.interceptors.request.use(
   config => {
-      let token = cookies.getItem('token') || ''
-      config.headers.common['Authorization'] = `Bearer ${token}`
+    let token = cookies.getItem('token') || ''
+    config.headers.common['Authorization'] = `Bearer ${token}`
       return config
   },
   error => {

@@ -1,9 +1,9 @@
 import axios from 'axios'
 
-export default function({store, req}) {
+export default async function({store}) {
     let state = store.state
     if (state.token && !state.user){
-        axios('/info',{
+        await axios('/info',{
             baseURL: 'http://api.strayjoke.test/',
             timeout: 5000,
             headers: {'Authorization': `Bearer ${state.token}`},
@@ -14,5 +14,5 @@ export default function({store, req}) {
         }).catch(err=>{
             console.log(err)
         })
-   }
+    }
 }

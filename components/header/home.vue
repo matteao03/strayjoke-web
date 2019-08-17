@@ -1,5 +1,5 @@
 <template>
-    <div class="header-index">
+    <div class="header-home">
         <div class="header-bar">
             <el-row :gutter="0" class="header-content">
                 <el-col :span="8">
@@ -33,7 +33,7 @@ export default {
 </script>
 
 <style lang="scss">
-.header-index{
+.header-home{
     background: #fff;
     box-shadow: 0 2px 27px 0 rgba(0,0,0,.1);
     .header-bar{
@@ -52,7 +52,7 @@ export default {
         }
     }
     .search-bar{
-        padding-bottom: 0px;
+        padding-bottom: 35px;
     }
 }
 </style>

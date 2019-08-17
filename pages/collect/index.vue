@@ -5,42 +5,48 @@
         </div>
         <div class="right">
             <div class="info">
-                <el-menu mode="horizontal" class="header">
-                    <el-menu-item index="1">收藏的律师</el-menu-item>
-                    <el-menu-item index="2">收藏的服务</el-menu-item>
-                </el-menu>
-                <div class="body">
-                    <ul class="collect-list">
-                       <li class="item clearfix">
-                            <div class="collect-img">
-                                <img src="http://p1.meituan.net/600.600/deal/cd85d78a3d6def81c6e7957283bdb27a291498.jpg@220w_125h_1e_1c" />
-                            </div>
-                            <div class="collect-info">
-                                <p class="title">个人法律顾问</p>
-                                <p>4.7分</p>
-                                <p class="address">普陀区</p>
-                            </div>
-                            <div class="btn-container">
-                                <a href="" class="detail-link">详情</a>
-                                <el-icon class="el-icon-delete btn-del" ></el-icon>
-                            </div>
-                        </li>
-                       <li class="item clearfix">
-                            <div class="collect-img">
-                                <img src="http://p1.meituan.net/600.600/deal/cd85d78a3d6def81c6e7957283bdb27a291498.jpg@220w_125h_1e_1c" />
-                            </div>
-                            <div class="collect-info">
-                                <p class="title">个人法律顾问</p>
-                                <p>4.7分</p>
-                                <p class="address">普陀区</p>
-                            </div>
-                            <div class="btn-container">
-                                <a href="" class="detail-link">详情</a>
-                                <el-icon class="el-icon-delete btn-del" ></el-icon>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
+                <el-tabs v-model="activeTab" @tab-click="handleClick">
+                    <el-tab-pane label="收藏的律师" name="lawyer">
+                        <div class="body">
+                            <ul class="collect-list">
+                                <li class="item clearfix"  v-for="item in collectLawyers" :key="item.id">
+                                    <div class="collect-img">
+                                        <img src="http://p1.meituan.net/600.600/deal/cd85d78a3d6def81c6e7957283bdb27a291498.jpg@220w_125h_1e_1c" />
+                                    </div>
+                                    <div class="collect-info">
+                                        <p class="title">个人法律顾问</p>
+                                        <p>4.7分</p>
+                                        <p class="address">普陀区</p>
+                                    </div>
+                                    <div class="btn-container">
+                                        <a href="" class="detail-link">详情</a>
+                                        <el-icon class="el-icon-delete btn-del" ></el-icon>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>    
+                    </el-tab-pane>
+                    <el-tab-pane label="收藏的服务" name="sku">
+                        <div class="body">
+                            <ul class="collect-list">
+                                <li class="item clearfix"  v-for="item in collectSkus" :key="item.id">
+                                    <div class="collect-img">
+                                        <img src="http://p1.meituan.net/600.600/deal/cd85d78a3d6def81c6e7957283bdb27a291498.jpg@220w_125h_1e_1c" />
+                                    </div>
+                                    <div class="collect-info">
+                                        <p class="title">个人法律顾问</p>
+                                        <p>4.7分</p>
+                                        <p class="address">普陀区</p>
+                                    </div>
+                                    <div class="btn-container">
+                                        <a href="" class="detail-link">详情</a>
+                                        <el-icon class="el-icon-delete btn-del" ></el-icon>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>  
+                    </el-tab-pane>
+                </el-tabs>
             </div>
         </div>
     </div>    
@@ -48,10 +54,32 @@
 
 <script>
 import MyMenu from '@/components/public/menu.vue'
+import { getCollectLawyers, getCollectSkus } from '@/api/collect'
 
 export default {
     components:{
         MyMenu
+    },
+    data(){
+        return {
+            activeTab: 'lawyer',
+            collectLawyers:[],
+            collectSkus:[]
+        }
+    },
+    methods:{
+        handleClick(tab) {
+            console.log(tab.name)
+            if (tab.name === 'lawyer'){
+                getCollectLawyers().then(res=>{
+                    this.collectLawyers = res.data.data
+                })
+            } else if (tab.name === 'sku'){
+                getCollectSkus().then(res=>{
+                    this.collectSkus = res.data.data
+                })
+            }
+        }
     }
 }
 </script>

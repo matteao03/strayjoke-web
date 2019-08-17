@@ -25,4 +25,4 @@ export const actions = {
     const token = cookiesObj.token 
     if (token) return commit('set_token', token)
   }
- }
+}

@@ -13,7 +13,7 @@
                         <div class="field-name">头像</div>
                         <div class="field-value"></div>
                         <div class="update">
-                             <el-button round>修改</el-button>
+                            <el-button round>修改</el-button>
                         </div>
                     </div>
                     <div class="item clearfix">

@@ -1,12 +1,12 @@
 <template>
     <div class="sj-right">
         <div class="menu-nav">
-            <nuxt-link to="/service">法律顾问</nuxt-link>
-            <nuxt-link to="/service">公司法务</nuxt-link>
-            <nuxt-link to="/">维权</nuxt-link>
-            <nuxt-link to="/">论坛</nuxt-link>
-            <nuxt-link to="/">招聘/求职</nuxt-link>
-            <nuxt-link to="/">律师入驻</nuxt-link>
+            <a href="/service" class="nav-link">法律顾问</a>
+            <a href="/service" class="nav-link">公司法务</a>
+            <nuxt-link to="/" class="nav-link">维权</nuxt-link>
+            <nuxt-link to="/" class="nav-link">论坛</nuxt-link>
+            <nuxt-link to="/" class="nav-link">招聘/求职</nuxt-link>
+            <nuxt-link to="/" class="nav-link">律师入驻</nuxt-link>
         </div>
         <div class="carousel-container clearfix">
             <el-carousel class="carousel" height="415px">
@@ -40,13 +40,16 @@ export default {
         position: absolute;
         top: -45px;
         left: 20px;
-        a {
+        .nav-link{
             color: #222;
             font-weight: 700;
             font-size: 16px;
             margin: 0 20px;
             cursor: pointer;
             position: relative;
+            &:hover{
+                color:#ccff40;
+            }
         }
     }
     .carousel-container{

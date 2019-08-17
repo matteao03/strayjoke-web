@@ -27,12 +27,18 @@
                         </div>
                     </a>
                 </div>
+                <div class="operate">
+                    <el-button v-if="item.lawyer.data.isCollect" type="danger" icon="el-icon-check" round @click="uncollect(item.lawyer.data.id)">已收藏</el-button>
+                    <el-button v-else type="warning" icon="el-icon-star-on" round @click="collect(item.lawyer.data.id)">收藏</el-button>
+                </div>
             </li> 
         </ul>
     </div>
 </template>
 
 <script>
+import { collectLawyer, uncollectLawyer } from '@/api/collect.js'
+
 export default {
     data(){
         return {
@@ -42,7 +48,19 @@ export default {
     props:{
         listData:{
             type:Array,
-            default:[]
+            default:['sss']
+        }
+    },
+    methods:{
+        collect(id){
+            collectLawyer(id).then(res=>{
+                
+            })
+        },
+        uncollect(id){
+            uncollectLawyer(id).then(res=>{
+                
+            })
         }
     }
 }
@@ -95,6 +113,10 @@ export default {
                 float:left;
                 padding: 4px 0 0 20px;
                 max-width: 666px;
+            }
+            .operate{
+                float:right;
+                padding:40px 0;
             }
         }
     }

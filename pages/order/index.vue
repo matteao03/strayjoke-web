@@ -5,43 +5,103 @@
         </div>
         <div class="right">
             <div class="info">
-                <el-menu mode="horizontal" class="header">
-                    <el-menu-item index="1">全部订单</el-menu-item>
-                    <el-menu-item index="2">待付款</el-menu-item>
-                    <el-menu-item index="3">使用中</el-menu-item>
-                    <el-menu-item index="4">待评价</el-menu-item>
-                    <el-menu-item index="5">退款/售后</el-menu-item>
-                </el-menu>
-                <div class="body">
-                    <ul class="order-list">
-                        <li class="item clearfix">
-                            <div class="order-img">
-                                <img src="http://p1.meituan.net/600.600/deal/cd85d78a3d6def81c6e7957283bdb27a291498.jpg@220w_125h_1e_1c" />
-                            </div>
-                            <div class="order-info">
-                                <a href="/">
-                                    <p class="title">个人法律顾问</p>
-                                </a>
-                                <p class="number">数量：1</p>
-                            </div>
-                            <div class="order-price">总价：200</div>
-                            <div class="order-status">已退款</div>
-                        </li>
-                        <li class="item">
-                            <div class="order-img">
-                                <img src="http://p1.meituan.net/600.600/deal/cd85d78a3d6def81c6e7957283bdb27a291498.jpg@220w_125h_1e_1c" />
-                            </div>
-                            <div class="order-info">
-                                <a href="/">
-                                    <p class="title">个人法律顾问</p>
-                                </a>
-                                <p class="number">数量：1</p>
-                            </div>
-                            <div class="order-price">总价：200</div>
-                            <div class="order-status">已退款</div>
-                        </li>
-                    </ul>
-                </div>
+                <el-tabs v-model="activeTab" @tab-click="handleClick">
+                    <el-tab-pane label="全部订单" name="all">
+                        <div class="body">
+                            <ul class="order-list">
+                                <li class="item clearfix" v-for="item in allOrders" :key="item.id">
+                                    <div class="order-img">
+                                        <img src="http://p1.meituan.net/600.600/deal/cd85d78a3d6def81c6e7957283bdb27a291498.jpg@220w_125h_1e_1c" />
+                                    </div>
+                                    <div class="order-info">
+                                        <a :href="`/order/${item.id}`">
+                                            <p class="title">个人法律顾问</p>
+                                        </a>
+                                        <p class="number">数量：1</p>
+                                    </div>
+                                    <div class="order-price">总价：200</div>
+                                    <div class="order-status">已退款</div>
+                                </li>
+                            </ul>
+                        </div>
+                    </el-tab-pane>
+                    <el-tab-pane label="待付款" name="nopay">
+                        <div class="body">
+                            <ul class="order-list">
+                                <li class="item clearfix" v-for="item in nopayOrders" :key="item.id">
+                                    <div class="order-img">
+                                        <img src="http://p1.meituan.net/600.600/deal/cd85d78a3d6def81c6e7957283bdb27a291498.jpg@220w_125h_1e_1c" />
+                                    </div>
+                                    <div class="order-info">
+                                        <a :href="`/order/${item.id}`">
+                                            <p class="title">个人法律顾问</p>
+                                        </a>
+                                        <p class="number">数量：1</p>
+                                    </div>
+                                    <div class="order-price">总价：200</div>
+                                    <div class="order-status">已退款</div>
+                                </li>
+                            </ul>
+                        </div>
+                    </el-tab-pane>
+                    <el-tab-pane label="使用中" name="paid">
+                        <div class="body">
+                            <ul class="order-list">
+                                <li class="item clearfix" v-for="item in paidOrders" :key="item.id">
+                                    <div class="order-img">
+                                        <img src="http://p1.meituan.net/600.600/deal/cd85d78a3d6def81c6e7957283bdb27a291498.jpg@220w_125h_1e_1c" />
+                                    </div>
+                                    <div class="order-info">
+                                        <a :href="`/order/${item.id}`">
+                                            <p class="title">个人法律顾问</p>
+                                        </a>
+                                        <p class="number">数量：1</p>
+                                    </div>
+                                    <div class="order-price">总价：200</div>
+                                    <div class="order-status">已退款</div>
+                                </li>
+                            </ul>
+                        </div>
+                    </el-tab-pane>
+                    <el-tab-pane label="待评价" name="nocomment">
+                        <div class="body">
+                            <ul class="order-list">
+                                <li class="item clearfix" v-for="item in nocommentOrders" :key="item.id">
+                                    <div class="order-img">
+                                        <img src="http://p1.meituan.net/600.600/deal/cd85d78a3d6def81c6e7957283bdb27a291498.jpg@220w_125h_1e_1c" />
+                                    </div>
+                                    <div class="order-info">
+                                        <a :href="`/order/${item.id}`">
+                                            <p class="title">个人法律顾问</p>
+                                        </a>
+                                        <p class="number">数量：1</p>
+                                    </div>
+                                    <div class="order-price">总价：200</div>
+                                    <div class="order-status">已退款</div>
+                                </li>
+                            </ul>
+                        </div>
+                    </el-tab-pane>
+                    <el-tab-pane label="退款/售后" name="refund">
+                        <div class="body">
+                            <ul class="order-list">
+                                <li class="item clearfix" v-for="item in refundOrders" :key="item.id">
+                                    <div class="order-img">
+                                        <img src="http://p1.meituan.net/600.600/deal/cd85d78a3d6def81c6e7957283bdb27a291498.jpg@220w_125h_1e_1c" />
+                                    </div>
+                                    <div class="order-info">
+                                        <a :href="`/order/${item.id}`">
+                                            <p class="title">个人法律顾问</p>
+                                        </a>
+                                        <p class="number">数量：1</p>
+                                    </div>
+                                    <div class="order-price">总价：200</div>
+                                    <div class="order-status">已退款</div>
+                                </li>
+                            </ul>
+                        </div>
+                    </el-tab-pane>
+                </el-tabs>
             </div>
         </div>
     </div>    
@@ -49,10 +109,28 @@
 
 <script>
 import MyMenu from '@/components/public/menu.vue'
+import { getOrders } from '@/api/order'
 
 export default {
     components:{
         MyMenu
+    },
+    data(){
+        return {
+            activeTab: 'all',
+            allOrders:[],
+            nopayOrders:[],
+            nocommentOrders:[],
+            paidOrders:[],
+            refundOrders:[],
+        }
+    },
+    methods:{
+        handleClick(tab) {
+            getOrders({status:tab.name}).then(res=>{
+                this[`${tab.name}Orders`] = res.data.data
+            })
+        }
     }
 }
 </script>

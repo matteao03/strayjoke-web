@@ -12,7 +12,9 @@
                     <my-list :list-data="list"/>
                 </div>
             </div>
-            <div class="right">1122</div>
+            <div class="right">
+                广告位
+            </div>
         </div>
     </div>
 </template>
@@ -21,7 +23,8 @@
 import Breadcrumb from '@/components/service/breadcrumb.vue'
 import MyFilter from '@/components/service/filter.vue'
 import MyList from '@/components/service/list.vue'
-import { getProductList } from '@/api/product'
+// import { getProductList } from '@/api/product'
+import axios from 'axios'
 
 export default {
     components:{
@@ -31,23 +34,24 @@ export default {
     },
     data(){
         return {
-            list:[]
         }
     },
-    async asyncData () {
-       let {data} =  await getProductList()
-       return {
-           list:data.data
-       }
-    },
+    async asyncData ({store}) {
+        try{
+            let { data } = await axios('/products?include=lawyer',{
+                baseURL: 'http://api.strayjoke.test/',
+                timeout: 5000,
+                headers: {'Authorization': `Bearer ${store.state.token}`},
+            })
+            return {list:data.data}
+        } catch(err){
+            return {list:[]}
+        }
+    }
 }
 </script>
 
 <style lang="scss">
-.header-index .search-bar{
-    padding-bottom: 0px;
-}
-
 .page-service{
     .service-content{
         margin: 0 auto;

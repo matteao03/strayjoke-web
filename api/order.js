@@ -7,3 +7,11 @@ export function createOrder(data) {
     data
   })
 }
+
+export function getOrders(query) {
+  return request({
+    url: '/orders',
+    method: 'get',
+    params:query
+  })
+}

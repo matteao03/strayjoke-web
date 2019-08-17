@@ -30,6 +30,7 @@
                         <div class="info">
                             <div class="buy-it">
                                 <el-button type="warning" round @click="buyIt(item.id)">立即购买</el-button>
+                                <el-button type="danger" round @click="collect(item.id)">收藏</el-button>
                             </div>
                             <div class="title">服务周期：{{item.period}}</div>
                             <div class="title">一个月法律顾问</div>
@@ -62,23 +63,33 @@
 
 <script>
 import { getSkuList } from '@/api/product'
+import { collectSku, uncollectSku } from '@/api/collect'
 
 export default {
     data(){
         return {
             colors: ['#99A9BF', '#F7BA2A', '#FF9900'],
-            skus:[]
         }
     },
     async asyncData ({params}) {
-       let {data} =  await getSkuList({product:params.id})
-       return {
-        skus:data.data
-       }
+        let {data} =  await getSkuList({product:params.id})
+        return {
+            skus:data.data
+        }
     },
     methods:{
         buyIt(id){
             this.$router.push(`/cert/${id}`)
+        },
+        collect(id){
+            collectSku(id).then(res=>{
+
+            })
+        },
+        uncollectSku(id){
+            uncollectSku(id).then(res=>{
+                
+            })
         }
     }
 }
