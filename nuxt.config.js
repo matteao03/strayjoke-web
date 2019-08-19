@@ -1,3 +1,4 @@
+const webpack = require('webpack')
 
 module.exports = {
   mode: 'universal',
@@ -55,8 +56,13 @@ module.exports = {
     */
     extend(config, ctx) {
     },
-    // 防止element-ui被多次打包
-    vendor: ['element-ui']
+    plugins: [
+      new webpack.ProvidePlugin({
+        '$': 'jquery',
+        jQuery:'jquery',
+        'window.jquery':'jquery'
+      })
+    ]
   },
 
   router:{

@@ -11,6 +11,8 @@ export default async function({store}) {
             const data = res.data.data
             store.commit('set_user', data.nickName);
             store.commit('set_phone', data.phone);
+            store.commit('set_avatar', data.avatar);
+            store.commit('set_birth', data.birth);
         }).catch(err=>{
             console.log(err)
         })
