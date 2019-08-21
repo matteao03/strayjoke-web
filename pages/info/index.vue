@@ -10,10 +10,21 @@
                 </div>
                 <div class="content">
                     <div class="item clearfix">
-                        <div class="field-name">头像</div>
-                        <img class="field-value" :src="avatar" />
+                        <div class="field-name title-avatar">头像</div>
+                        <el-avatar :size="48" class="field-avatar" :src="avatar"></el-avatar>
                         <div class="update">
-                            <el-button round>修改</el-button>
+                            <el-upload
+                                ref="avatar-upload"
+                                class="avatar-uploader"
+                                action="http://api.strayjoke.test/user/avatar"
+                                accept="image/*"
+                                :show-file-list="false"
+                                :on-change = "handleAvatarPreview"
+                                :on-success="handleAvatarSuccess"
+                                :headers="headers"
+                                :auto-upload="false">
+                                <el-button round>修改</el-button>
+                            </el-upload>
                         </div>
                     </div>
                     <div class="item clearfix">
@@ -25,7 +36,7 @@
                     </div>
                     <div class="item clearfix">
                         <div class="field-name">生日</div>
-                        <div class="field-value"></div>
+                        <div class="field-value">{{birth}}</div>
                         <div class="update">
                             <el-button round @click="birthDialogVisible=true">修改</el-button>
                         </div>
@@ -47,6 +58,40 @@
                 </div>
             </div>
         </div>
+        <el-dialog
+            title="修改头像"
+            :visible.sync="avatarDialogVisible"
+            width="480px"
+            custom-class="editDialog clearfix"
+        >
+            <el-row :gutter="5">
+                <el-col :span="18">
+                    <div style="width:300px; height:300px; border:1px solid #999;">
+                        <vue-cropper 
+                            ref="cropper"
+                            :img="newAvatar" 
+                            outputType="png"
+                            :autoCrop="true"
+                            :centerBox="true"
+                            @realTime= "realTime"
+                        >
+                        </vue-cropper>
+                    </div>
+                </el-col>
+                <el-col :span="6">
+                    <div class="show-preview" :style="previewStyle">
+                        <div :style="previews.div">
+                            <img :src="previews.url" :style="previews.img">
+                        </div>
+                    </div>
+                </el-col>
+            </el-row>
+            <span slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="editAvatar">确定修改</el-button>
+                <el-button @click="refreshCrop">刷新</el-button>
+                <el-button @click="avatarDialogVisible = false">取 消</el-button>
+            </span>
+        </el-dialog>
         <el-dialog
             title="修改昵称"
             :visible.sync="nameDialogVisible"
@@ -72,10 +117,10 @@
             custom-class="editDialog"
         >
             <div class="body">
-                <brithday></brithday>
+                <brithday v-on:change="changeBirth" :birthday="birth"></brithday>
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="editPassword">确 定</el-button>
+                <el-button type="primary" @click="editBirth">确 定</el-button>
                 <el-button @click="passwordDialogVisible = false">取 消</el-button>
             </span>
         </el-dialog>
@@ -101,7 +146,6 @@
                 <el-button @click="passwordDialogVisible = false">取 消</el-button>
             </span>
         </el-dialog>
-
     </div>    
 </template>
 
@@ -109,12 +153,12 @@
 import MyMenu from '@/components/public/menu.vue'
 import Brithday from '@/components/public/birthday.vue'
 import { mapState } from 'vuex'
-import { editName } from '@/api/user.js'
+import { editName, editBirth, editAvatar } from '@/api/user.js'
 
 export default {
     components:{
         MyMenu,
-        Brithday
+        Brithday,
     },
     computed:{
         ...mapState({
@@ -126,29 +170,82 @@ export default {
     },
     data(){
         return {
+            headers:{
+                Authorization:`Bearer ${this.$store.state.token}`
+            },
             nameDialogVisible:false,
             avatarDialogVisible:false,
             phoneDialogVisible:false,
             birthDialogVisible:false,
             passwordDialogVisible:false,
             newName:'',
+            newBirth:this.birth,
+            newAvatar:'',
             passwordForm:{
                 password:'',
                 newPassword:'',
                 confirmed:''
-            }
+            },
+            previews:{},
+            previewStyle:{}
         }
+    },
+    mounted:function(){
     },
     methods:{
         editName(){
            editName({name:this.newName}).then(res=>{
-               
+               this.$sotre.commit('set_user', this.newName)
            }) 
         },
         editPassword(){
 
+        },
+        editBirth(){
+            editBirth({birth:this.newBirth}).then(res=>{
+                this.$sotre.commit('set_birth', this.newBirth)
+            })
+        },
+        changeBirth(data){
+            this.newBirth = data
+        },
+        handleAvatarSuccess(res, file) {
+            this.imgUrl = URL.createObjectURL(file.raw)
+            this.$sotre.commit('set_avatar', res.data.path)
+        },
+        handleAvatarPreview(file) {
+            this.avatarDialogVisible = true
+            let reader = new FileReader()
+            reader.readAsDataURL(file.raw)
+            reader.onload=()=>{
+                this.newAvatar = reader.result
+            }
+        },
+        refreshCrop() {
+            // clear
+            this.$refs.cropper.refresh();
+        },
+        realTime(data){
+            let previews = data
+            this.previews = data
+            this.previewStyle = {
+                width: previews.w + "px",
+                height: previews.h + "px",
+                overflow: "hidden",
+                margin: "0",
+                zoom: (100 / previews.h) ,
+                border:'1px solid #999'       
+            }
+        },
+        editAvatar() {
+            this.$refs.cropper.getCropData(data => {
+                editAvatar({avatar:data}).then(res=>{
+                    this.$store.commit('set_avatar', data)
+                    this.avatarDialogVisible = false
+                })
+            })
         }
-    }
+    }   
 }
 </script>
 
@@ -183,11 +280,17 @@ export default {
                         padding-right: 30px;
                         float: left;
                     }
+                    .title-avatar{
+                        line-height:48px;
+                    }
                     .field-value{
                         float: left;
                         text-align: right;
                         padding-left: 30px;
                         line-height: 34px;
+                    }
+                    .field-avatar{
+                        margin-left:30px;
                     }
                     .update{
                         margin: 0 15px;

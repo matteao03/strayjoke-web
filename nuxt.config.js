@@ -32,6 +32,7 @@ module.exports = {
   plugins: [
     // ssr: true表示这个插件只在服务端起作用
     {src: '~/plugins/element-ui', ssr: true },
+    {src: '~/plugins/vue-cropper', ssr: false }
   ],
   /*
   ** Nuxt.js modules
@@ -55,14 +56,7 @@ module.exports = {
     ** You can extend webpack config here
     */
     extend(config, ctx) {
-    },
-    plugins: [
-      new webpack.ProvidePlugin({
-        '$': 'jquery',
-        jQuery:'jquery',
-        'window.jquery':'jquery'
-      })
-    ]
+    }
   },
 
   router:{

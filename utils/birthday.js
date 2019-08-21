@@ -98,7 +98,8 @@ ms_DatePicker: function (options) {
 				BuildDay();
             };
             $DaySelector.change(function(){
-                $birth.value = $YearSelector.
+                var a = $YearSelector.selectedIndex;
+                $Birth.value = $YearSelector.options[$YearSelector.selectedIndex].value + '-'+ $MonthSelector.options[$MonthSelector.selectedIndex].value + $DaySelector.options[$DaySelector.selectedIndex].value
             })
         } // End ms_DatePicker
 });
